@@ -48,4 +48,4 @@ A análise dos pesos das palavras mais influentes forneceu *insights* valiosos:
 
 ## ✉️ Contact
 
-Email: [Seu Email Aqui]
+Email: [lucasgrezzi@gmail.com]
