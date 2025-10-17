@@ -1,43 +1,51 @@
-Análise de Sentimento em Reviews de Produtos
-Este projeto visa desenvolver um modelo de classificação de Machine Learning capaz de analisar reviews de produtos e classificá-las como positivas ou negativas. Como o dataset original não fornecia uma variável de sentimento, um dos principais desafios foi a criação dessa variável a partir dos dados de avaliação (review_score).
+# Análise de Sentimento em Reviews de Produtos com Machine Learning e GenAI
 
-🚀 Tecnologias e Bibliotecas
-Foram utilizadas as seguintes bibliotecas:
+Este projeto visa desenvolver um modelo de classificação de Machine Learning capaz de analisar reviews de produtos e classificá-las como positivas ou negativas. Um desafio inicial foi a criação da variável alvo de sentimento a partir das notas de avaliação (`review_score`), já que o dataset original não a fornecia.
 
-Pandas: Para manipulação e análise dos dados.
+A implementação utiliza técnicas de processamento de linguagem natural (NLP) com **TF-IDF** e incorpora a **Inteligência Artificial Generativa (Gemini API)** para enriquecer o treinamento do modelo.
 
-Scikit-learn: Para pré-processamento, vetorização do texto, treinamento e avaliação do modelo.
+O modelo alcançou uma **acurácia de 93%** e fornece *insights* de negócio, como a identificação das principais razões (palavras-chave) por trás da satisfação e da insatisfação dos clientes.
 
-Matplotlib e Seaborn: Para visualização dos resultados.
+## 🧠 Metodologia e Pipeline
 
-Numpy: Para operações numéricas e estatísticas.
+O desenvolvimento do modelo seguiu as etapas de pré-processamento, engenharia de features, e treinamento, com um destaque para o uso de IA Generativa:
 
-🧠 Metodologia
-O desenvolvimento do modelo seguiu as seguintes etapas:
+1. **Criação da Variável Alvo:** Definição de sentimento (Positivo/Negativo) a partir do `review_score`. Reviews com nota 3 (neutras) foram removidas para garantir o aprendizado com exemplos claros.
+2. **Pré-processamento de Texto:** Os comentários foram limpos, removendo valores nulos, pontuação e convertidos para minúsculas.
+3. **Engenharia de Features:** Uso do **TF-IDF** para transformar texto em dados numéricos, focando em palavras relevantes como 'atraso' ou 'excelente'.
+4. **Aumento de Dados (Data Augmentation) com GenAI:** A **Gemini API** foi utilizada para gerar 10 novos exemplos de reviews positivas sintéticas, aprimorando a capacidade de generalização do modelo.
+5. **Treinamento e Avaliação:** O modelo foi treinado com os dados aumentados (Regressão Logística/Naive Bayes Multinomial) e avaliado com **Validação Cruzada (10 *folds*)** para atestar sua robustez.
 
-1. Pré-processamento e Criação da Variável Alvo
-A primeira etapa foi a criação da variável alvo. Reviews com review_score entre 4 e 5 foram classificadas como positivas (1), enquanto as com notas 1 e 2 foram classificadas como negativas (0). As reviews com nota 3 (neutras) foram removidas para garantir que o modelo aprendesse com exemplos claros. Em seguida, os comentários de texto foram limpos, com a remoção de valores nulos e pontuação.
+## 📊 Performance do Modelo
 
-2. Engenharia de Features (Vetorização)
-Para que o modelo pudesse entender o texto, usei a técnica TF-IDF (Term Frequency-Inverse Document Frequency). Essa abordagem, que é uma evolução da simples contagem de palavras, atribui um peso maior a termos que são importantes em uma review, mas raros no dataset. Essa escolha foi crucial para garantir que o modelo focasse em palavras relevantes como 'atraso' ou 'excelente', em vez de palavras comuns.
+O modelo aprimorado alcançou as seguintes métricas de desempenho no conjunto de teste:
 
-3. Treinamento e Avaliação do Modelo
-Utilizei o classificador Naive Bayes Multinomial, um algoritmo robusto e eficiente para problemas de classificação de texto. A performance foi analisada com métricas como a acurácia, a matriz de confusão e o relatório de classificação. Para garantir a confiabilidade das métricas, implementei a validação cruzada com 10 folds usando o StratifiedKFold.
+| Métrica | Negativo (0) | Positivo (1) |
+| :--- | :--- | :--- |
+| **Acurácia Geral** | \multicolumn{2}{|c|}{**0.93**} |
+| **F1-Score** | 0.90 | 0.95 |
+| **Precisão** | 0.88 | 0.96 |
+| **Recall** | 0.91 | 0.94 |
 
-Resultados da Validação Cruzada: A acurácia média de 91,57% e o baixo desvio padrão (0.0051) provaram que o modelo é robusto e consistente, performando bem em diferentes subconjuntos de dados.
+* **Alta Precisão (0.96) para Positivos:** Garante que, ao prever satisfação, o modelo está correto 96% das vezes.
+* **Alto Recall (0.91) para Negativos:** Indica que o modelo é muito bom em "capturar" reclamações reais, assegurando que poucas passem despercebidas.
 
-Análise por Classe: A matriz de confusão e o relatório de classificação revelaram que, para as reviews positivas, o modelo alcançou uma precisão de 95% e um F1-score de 0.94. Para as reviews negativas, a precisão foi de 85% e o recall de 89%, mostrando uma excelente capacidade de identificar a maioria das reclamações.
+## 🌟 Insights de Negócio
 
-4. 🌟 Bônus: Extração de Insights de Negócio
-Para ir além da classificação, usei a análise dos pesos das palavras do modelo para extrair as que mais influenciam o sentimento. Isso permite entender as razões que tornam uma review positiva ou negativa, fornecendo insights valiosos para o negócio.
+A análise dos pesos das palavras mais influentes forneceu *insights* valiosos:
 
-Elogios: Palavras como 'ótimo', 'excelente' e 'rápido' estão geralmente relacionadas a elogios sobre a qualidade do produto ou a agilidade da entrega.
+* **Críticas:** A palavra **'não'** é a mais frequente entre as avaliações negativas, indicando a negação como a principal forma de expressão de insatisfação. Termos como 'atraso', 'problema' e 'defeito' também são indicadores fortes.
+* **Elogios:** Palavras como 'ótimo' e 'excelente' são fortes indicadores de satisfação, refletindo a percepção positiva da maioria dos clientes.
 
-Críticas: Palavras como 'atraso', 'problema' e 'ruim' são fortes indicadores de problemas com a logística ou a qualidade. A análise mostrou que a palavra 'não' é a mais frequente entre as avaliações negativas, indicando a negação como principal forma de expressão de insatisfação.
+## 🛠️ Tecnologias utilizadas
 
-🛠️ Como Rodar o Projeto
-Clone este repositório.
+* Python;
+* Pandas library;
+* Scikit-learn library;
+* Numpy library;
+* Matplotlib e Seaborn libraries;
+* Gemini API (Google Generative AI).
 
-Instale as dependências: pip install pandas scikit-learn matplotlib seaborn numpy.
+## ✉️ Contact
 
-Execute o script principal (seu_script_principal.py) para reproduzir a análise.
+Email: [Seu Email Aqui]
